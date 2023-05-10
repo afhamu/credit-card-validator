@@ -76,6 +76,47 @@
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#btn-validate').click(function (e) {
+            e.preventDefault();
 
+            let card_holder = $('#cc-name').val();
+            let card_number = $('#cc-number').val();
+            let expiry_month = $('#cc-expiration-month').val();
+            let expiry_year = $('#cc-expiration-year').val();
+            let cvv = $('#cc-cvv').val();
+
+            let data = {
+                'card_holder': card_holder,
+                'card_number': card_number,
+                'expiry_month': expiry_month,
+                'expiry_year': expiry_year,
+                'cvv': cvv
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: "http://localhost:8000/api/credit-card/validate",
+                data: {'data': data},
+                dataType: 'JSON',
+                success: function (response) {
+                    if (response.status == "success") {
+                        $('.alert-danger').css("display", "none");
+                        $('.alert-success').css("display", "block");
+                        $('.alert-success').html(response.message);
+                    } else {
+                        $('.alert-success').css("display", "none");
+                        $('.alert-danger').css("display", "block");
+                        $('.alert-danger').html(response.message);
+                    }
+
+                },
+
+            });
+
+        });
+    });
+</script>
 </body>
 </html>
